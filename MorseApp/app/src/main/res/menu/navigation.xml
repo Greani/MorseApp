@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_morsekey"
+        android:icon="@drawable/icon_morsekey"
+        android:title="@string/title_morsekey" />
+
+    <item
+        android:id="@+id/navigation_translator"
+        android:checkable="false"
+        android:icon="@drawable/icon_translator"
+        android:title="@string/title_translator" />
+
+    <item
+        android:id="@+id/navigation_shortcuts"
+        android:icon="@drawable/icon_shortcuts"
+        android:title="@string/title_shortcuts" />
+
+</menu>

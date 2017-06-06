@@ -1,0 +1,126 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    tools:context="at.fhooe.mc.android.morseapp.TransFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Switch
+                android:id="@+id/translator_switch_audio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/translator_switch_audio_text"
+                android:textColorLink="@color/colorPrimary" />
+
+            <Switch
+                android:id="@+id/translator_switch_haptic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/translator_switch_haptic_text"
+                android:textColorLink="@color/colorPrimary" />
+
+            <Switch
+                android:id="@+id/translator_switch_flash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/translator_switch_flash_text"
+                android:textColorLink="@color/colorPrimary" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/translator_textfield_text"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_weight="0.08"
+            android:ems="10"
+            android:hint="@string/translator_textfield_text_hint_mode_1"
+            android:inputType="textMultiLine|textPersonName"
+            android:textSize="30sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/translator_button_translate"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="@string/translator_button_translate_text" />
+
+            <Button
+                android:id="@+id/translator_button_out"
+                android:layout_width="120dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorAccent"
+                android:text="@string/translator_button_out_text" />
+
+            <Button
+                android:id="@+id/translator_button_switch"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="@string/translator_button_switch_text" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/translator_textfield_morse"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:text="@string/translator_textfield_morse_hint_mode_1"
+            android:textSize="30sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/translator_button_dot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="." />
+
+            <Button
+                android:id="@+id/translator_button_dash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="-" />
+
+            <Button
+                android:id="@+id/translator_button_pause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="-----" />
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

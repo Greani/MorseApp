@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">MorseApp</string>
+    <string name="title_morsekey">Morse Key</string>
+    <string name="title_translator">Translator</string>
+    <string name="title_shortcuts">Shortcuts</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="translator_button_out_text">Send</string>
+    <string name="translator_button_translate_text">Translate</string>
+    <string name="translator_button_switch_text">Switch</string>
+    <string name="translator_switch_audio_text">Audio</string>
+    <string name="translator_switch_haptic_text">Vibration</string>
+    <string name="translator_switch_flash_text">Light</string>
+    <string name="translator_textfield_text_hint_mode_1">Insert Text here</string>
+    <string name="translator_textfield_morse_hint_mode_1">MorseCode</string>
+    <string name="translator_textfield_text_hint_mode_2">Text</string>
+    <string name="translator_textfield_morse_hint_mode_2">Press Buttons to insert Morsecode</string>
+</resources>
