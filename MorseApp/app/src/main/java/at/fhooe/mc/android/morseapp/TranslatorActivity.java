@@ -41,7 +41,7 @@ public class TranslatorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_translator);
 
         TranslatorBackend.fillMap();
-
+        TranslatorBackend.fillBackMap();
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         TransFragment fragment = new TransFragment();

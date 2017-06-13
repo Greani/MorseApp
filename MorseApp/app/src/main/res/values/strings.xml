@@ -12,8 +12,9 @@
     <string name="translator_switch_audio_text">Audio</string>
     <string name="translator_switch_haptic_text">Vibration</string>
     <string name="translator_switch_flash_text">Light</string>
+    <string name="translator_button_delet_text">Delete</string>
     <string name="translator_textfield_text_hint_mode_1">Insert Text here</string>
     <string name="translator_textfield_morse_hint_mode_1">MorseCode</string>
-    <string name="translator_textfield_text_hint_mode_2">Text</string>
+    <string name="translator_textfield_text_hint_mode_2">Translated Text</string>
     <string name="translator_textfield_morse_hint_mode_2">Press Buttons to insert Morsecode</string>
 </resources>
