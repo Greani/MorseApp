@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -18,7 +20,7 @@ import org.w3c.dom.Text;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TransFragment extends Fragment implements View.OnClickListener {
+public class TransFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     public static final String TAG = "Translator Fragment";
 
@@ -33,11 +35,21 @@ public class TransFragment extends Fragment implements View.OnClickListener {
 
         View view=inflater.inflate(R.layout.fragment_trans, container, false);
 
-        Button b = (Button)view.findViewById(R.id.translator_button_translate);
+        Button b=null;
+        b = (Button)view.findViewById(R.id.translator_button_translate);
         b.setOnClickListener(this);
         b = (Button)view.findViewById(R.id.translator_button_switch);
         b.setOnClickListener(this);
+        b = (Button)view.findViewById(R.id.translator_button_send);
+        b.setOnClickListener(this);
 
+        Switch sw=null;
+        sw=(Switch)view.findViewById(R.id.translator_switch_audio);
+        sw.setOnCheckedChangeListener(this);
+        sw=(Switch)view.findViewById(R.id.translator_switch_light);
+        sw.setOnCheckedChangeListener(this);
+        sw=(Switch)view.findViewById(R.id.translator_switch_haptic);
+        sw.setOnCheckedChangeListener(this);
         return view;
 
 
@@ -66,17 +78,7 @@ public class TransFragment extends Fragment implements View.OnClickListener {
 
         switch (view.getId()) {
             case R.id.translator_button_translate:{
-                if(TranslatorBackend.getMode()) {
-                    EditText TextTextBox = (EditText) getActivity().findViewById(R.id.translator_textfield_text);
-                    TextView MorseTextBox = (TextView) getActivity().findViewById(R.id.translator_textfield_morse);
-                    MorseTextBox.setText(TranslatorBackend.translate(TextTextBox.getText().toString()));
-                }
-                else
-                {
-                    EditText TextTextBox = (EditText) getActivity().findViewById(R.id.translator_textfield_text);
-                    TextView MorseTextBox = (TextView) getActivity().findViewById(R.id.translator_textfield_morse);
-                    TextTextBox.setText(TranslatorBackend.translateBack(MorseTextBox.getText().toString()));
-                }
+                extractInsertTranslate();
             }break;
             case R.id.translator_button_switch:{
                 Button b1=(Button)getActivity().findViewById(R.id.translator_button_dash);
@@ -124,7 +126,8 @@ public class TransFragment extends Fragment implements View.OnClickListener {
                 }
                 else
                 {
-                    b1.setVisibility(View.INVISIBLE);
+                    Log.e(TAG,"asdf");
+                    b1.setVisibility(View.GONE);
                     b2.setVisibility(View.INVISIBLE);
                     b3.setVisibility(View.INVISIBLE);
                     b4.setVisibility(View.INVISIBLE);
@@ -138,11 +141,47 @@ public class TransFragment extends Fragment implements View.OnClickListener {
                 }
                 TranslatorBackend.setMode();
             }break;
+            case R.id.translator_button_send:{
+                extractInsertTranslate();
+                TextView MorseTextBox = (TextView) getActivity().findViewById(R.id.translator_textfield_morse);
+                OutputManager.sendSignals(getActivity(),MorseTextBox.getText().toString());
+            }break;
             default:{
-                Log.e(TAG,"Not available button was pressed");
+                Log.e(TAG,"Unexpected button was pressed");
             }
         }
 
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.translator_switch_audio:{
+                OutputManager.setAudioStatus(isChecked);
+            }break;
+            case R.id.translator_switch_light:{
+                OutputManager.setLightStatus(isChecked);
+            }break;
+            case R.id.translator_switch_haptic:{
+                OutputManager.setVibrationStatus(isChecked);
+            }break;
+            default:Log.e(TAG,"Unexpected Switch was pressed");
+        }
+        //Log.e(TAG,"Value: "+OutputManager.getAudioStatus()+" "+OutputManager.getLightStatus()+" "+OutputManager.getVibrationStatus());
+    }
+
+    public void extractInsertTranslate(){
+        if(TranslatorBackend.getMode()) {
+            EditText TextTextBox = (EditText) getActivity().findViewById(R.id.translator_textfield_text);
+            TextView MorseTextBox = (TextView) getActivity().findViewById(R.id.translator_textfield_morse);
+            MorseTextBox.setText(TranslatorBackend.translate(TextTextBox.getText().toString()));
+        }
+        else
+        {
+            EditText TextTextBox = (EditText) getActivity().findViewById(R.id.translator_textfield_text);
+            TextView MorseTextBox = (TextView) getActivity().findViewById(R.id.translator_textfield_morse);
+            TextTextBox.setText(TranslatorBackend.translateBack(MorseTextBox.getText().toString()));
+        }
     }
 }
 
