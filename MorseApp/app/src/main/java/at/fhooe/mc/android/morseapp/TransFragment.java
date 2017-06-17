@@ -144,7 +144,7 @@ public class TransFragment extends Fragment implements View.OnClickListener, Com
             case R.id.translator_button_send:{
                 extractInsertTranslate();
                 TextView MorseTextBox = (TextView) getActivity().findViewById(R.id.translator_textfield_morse);
-                OutputManager.sendSignals(getActivity(),MorseTextBox.getText().toString());
+                    OutputManager.sendSignals(getActivity(),MorseTextBox.getText().toString());
             }break;
             default:{
                 Log.e(TAG,"Unexpected button was pressed");
