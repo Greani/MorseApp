@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 public class TranslatorActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
+    private final static String TAG="Translator Activity";
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -20,15 +22,30 @@ public class TranslatorActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_morsekey:
-                    mTextMessage.setText(R.string.title_morsekey);
-                    return true;
-                case R.id.navigation_translator:
-                    mTextMessage.setText(R.string.title_translator);
-                    return true;
-                case R.id.navigation_shortcuts:
-                    mTextMessage.setText(R.string.title_shortcuts);
-                    return true;
+                case R.id.navigation_morsekey: {
+                    FragmentManager fmgr = getFragmentManager();
+                    FragmentTransaction ft = fmgr.beginTransaction();
+                    ft.replace(R.id.main_activity_fragment_container,new ButtonFragment());
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
+                return true;
+                case R.id.navigation_translator: {
+                    FragmentManager fmgr = getFragmentManager();
+                    FragmentTransaction ft = fmgr.beginTransaction();
+                    ft.replace(R.id.main_activity_fragment_container,new TransFragment());
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
+                return true;
+                case R.id.navigation_shortcuts: {
+                    FragmentManager fmgr = getFragmentManager();
+                    FragmentTransaction ft = fmgr.beginTransaction();
+                    ft.replace(R.id.main_activity_fragment_container, new ShortcutFragment());
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
+                return true;
             }
             return false;
         }
@@ -39,15 +56,22 @@ public class TranslatorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_translator);
-
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        View view = navigation.findViewById(R.id.navigation_translator);
+        view.performClick();
         TranslatorBackend.fillMap();
         TranslatorBackend.fillBackMap();
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        TransFragment fragment = new TransFragment();
-        fragmentTransaction.add(R.id.main_fragment_container, fragment);
-        fragmentTransaction.commit();
-
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        View view = navigation.findViewById(R.id.navigation_translator);
+        view.performClick();
+        TranslatorBackend.fillMap();
+        TranslatorBackend.fillBackMap();
+    }
 }

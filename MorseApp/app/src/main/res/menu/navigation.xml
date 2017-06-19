@@ -9,7 +9,8 @@
 
     <item
         android:id="@+id/navigation_translator"
-        android:checkable="false"
+        android:checked="true"
+        android:enabled="true"
         android:icon="@drawable/icon_translator"
         android:title="@string/title_translator" />
 

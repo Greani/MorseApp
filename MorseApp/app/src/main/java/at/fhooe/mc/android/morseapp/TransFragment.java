@@ -28,7 +28,6 @@ public class TransFragment extends Fragment implements View.OnClickListener, Com
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -48,31 +47,28 @@ public class TransFragment extends Fragment implements View.OnClickListener, Com
         sw.setOnCheckedChangeListener(this);
         sw=(Switch)view.findViewById(R.id.translator_switch_light);
         sw.setOnCheckedChangeListener(this);
-        sw=(Switch)view.findViewById(R.id.translator_switch_haptic);
+        sw=(Switch)view.findViewById(R.id.translator_switch_vibration);
         sw.setOnCheckedChangeListener(this);
         return view;
 
 
     }
-    private void setString(String s){
-        TextView MorseTextBox = (TextView) getActivity().findViewById(R.id.translator_textfield_morse);
-        String s1=MorseTextBox.getText().toString();
-        StringBuilder sb = new StringBuilder();
-        if(!s1.equalsIgnoreCase(getResources().getString(R.string.translator_textfield_morse_hint_mode_2)))
-        sb.append(s1);
-        sb.append(s);
-        MorseTextBox.setText(sb.toString());
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        View view=getView();
+        Switch sw=null;
+        sw=(Switch)view.findViewById(R.id.translator_switch_audio);
+        sw.setChecked(OutputManager.getAudioStatus());
+        sw=(Switch)view.findViewById(R.id.translator_switch_light);
+        sw.setChecked(OutputManager.getLightStatus());
+        sw=(Switch)view.findViewById(R.id.translator_switch_vibration);
+        sw.setChecked(OutputManager.getVibrationStatus());
     }
-    private void deleteOne(){
-        TextView MorseTextBox = (TextView) getActivity().findViewById(R.id.translator_textfield_morse);
-        String s1=MorseTextBox.getText().toString();
-        StringBuilder sb = new StringBuilder();
-        if(!s1.equalsIgnoreCase(getResources().getString(R.string.translator_textfield_morse_hint_mode_2))) {
-            if(s1.length()>0)
-            sb.append(s1.substring(0,s1.length()-1));
-        }
-            MorseTextBox.setText(sb.toString());
-    }
+
+
     @Override
     public void onClick(View view) {
 
@@ -143,8 +139,16 @@ public class TransFragment extends Fragment implements View.OnClickListener, Com
             }break;
             case R.id.translator_button_send:{
                 extractInsertTranslate();
+                Button b=(Button)getActivity().findViewById(R.id.translator_button_send);
+                if(b.getText()==getResources().getString(R.string.translator_button_out_send_text)) {
+                    b.setText(R.string.translator_button_out_pause_text);
+                }
+                else {
+                    b.setText(R.string.translator_button_out_send_text);
+                }
                 TextView MorseTextBox = (TextView) getActivity().findViewById(R.id.translator_textfield_morse);
                     OutputManager.sendSignals(getActivity(),MorseTextBox.getText().toString());
+
             }break;
             default:{
                 Log.e(TAG,"Unexpected button was pressed");
@@ -162,12 +166,33 @@ public class TransFragment extends Fragment implements View.OnClickListener, Com
             case R.id.translator_switch_light:{
                 OutputManager.setLightStatus(isChecked);
             }break;
-            case R.id.translator_switch_haptic:{
+            case R.id.translator_switch_vibration:{
                 OutputManager.setVibrationStatus(isChecked);
             }break;
             default:Log.e(TAG,"Unexpected Switch was pressed");
         }
         //Log.e(TAG,"Value: "+OutputManager.getAudioStatus()+" "+OutputManager.getLightStatus()+" "+OutputManager.getVibrationStatus());
+    }
+
+    private void setString(String s){
+        TextView MorseTextBox = (TextView) getActivity().findViewById(R.id.translator_textfield_morse);
+        String s1=MorseTextBox.getText().toString();
+        StringBuilder sb = new StringBuilder();
+        if(!s1.equalsIgnoreCase(getResources().getString(R.string.translator_textfield_morse_hint_mode_2)))
+            sb.append(s1);
+        sb.append(s);
+        MorseTextBox.setText(sb.toString());
+    }
+
+    private void deleteOne(){
+        TextView MorseTextBox = (TextView) getActivity().findViewById(R.id.translator_textfield_morse);
+        String s1=MorseTextBox.getText().toString();
+        StringBuilder sb = new StringBuilder();
+        if(!s1.equalsIgnoreCase(getResources().getString(R.string.translator_textfield_morse_hint_mode_2))) {
+            if(s1.length()>0)
+                sb.append(s1.substring(0,s1.length()-1));
+        }
+        MorseTextBox.setText(sb.toString());
     }
 
     public void extractInsertTranslate(){

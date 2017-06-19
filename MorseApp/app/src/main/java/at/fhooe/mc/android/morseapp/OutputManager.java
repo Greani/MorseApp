@@ -24,6 +24,8 @@ public class OutputManager {
     private static boolean vibration = false;
     private static boolean audio = false;
     private static boolean light = false;
+    private static boolean terminate=true;
+    private static Vibrator v=null;
 
     public static boolean getVibrationStatus() {
         return (vibration);
@@ -49,34 +51,35 @@ public class OutputManager {
         light = _status;
     }
 
-    public static void invertVibrationStatus() {
-        vibration = !vibration;
-    }
-
-    public static void invertAudioStatus() {
-        audio = !audio;
-    }
-
-    public static void invertLightStatus() {
-        light = !light;
-    }
-
     //Only works with vibration yet
-    public static void sendSignals(Context mContext, String _morseSequence) {
-        if (vibration)
-            sendVibration(mContext, _morseSequence);
-        if (audio)
-            sendAudio(mContext, _morseSequence);
-        if (light)
-            if (mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH))
-                sendLight(mContext, _morseSequence);
-            else
-                Toast.makeText(mContext, "This phone doesn't have a flash", Toast.LENGTH_SHORT).show();
+    public static void sendSignals(Context _context, String _morseSequence) {
+        v=(Vibrator) _context.getSystemService(Context.VIBRATOR_SERVICE);
+        terminate=!terminate;
+        if(terminate){
+            if(v!=null)
+            v.cancel();
+        }
+        else {
+            if (vibration) {
+                sendVibration(_context, _morseSequence);
+            }
+            if (audio) {
+
+                sendAudio(_context, _morseSequence);
+            }
+            if (light) {
+
+                if (_context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH))
+                    sendLight(_context, _morseSequence);
+                else
+                    Toast.makeText(_context, "This phone doesn't have a flash", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private static long[] generateSequence(String _morseSequence) {
         ArrayList<Long> sequenceList = new ArrayList<>();
-        sequenceList.add((long) 0);
+        sequenceList.add((long) 200);
         for (int i = 0; i < _morseSequence.length(); i++) {
             switch (_morseSequence.charAt(i)) {
                 case '·': {
@@ -123,50 +126,55 @@ public class OutputManager {
     private static void sendAudio(Context _context, final String _morseSequence) {
         new Thread(new Runnable() {
             public void run() {
+                int offset=30;
                 long[] aSequence = generateSequence(_morseSequence);
                 for (int i = 1; i < aSequence.length; i++) {
+                    if(terminate)
+                        break;
                     if ((i % 2) == 1) {
                         sendTone((int) aSequence[i]);
                     } else {
                         try {
-                            Thread.sleep((int) aSequence[i]);
+                            Thread.sleep((int) aSequence[i]-offset);
                         } catch (InterruptedException e) {
                             Log.e(TAG, "Thread sleep exception(sendAudio())");
                         }
                     }
                 }
             }
+
         }).start();
+
     }
 
     //Need better implementation crashes when called 2 times
     private static void sendLight(final Context _context, final String _morseSequence) {
         new Thread(new Runnable() {
+            android.hardware.Camera cam=null;
             public void run() {
-                long[] fSequence = generateSequence(_morseSequence);
-                Log.e(TAG,sequenceToString(fSequence));
-                for (int i = 1; i < fSequence.length; i++) {
+                int offset=1;
+                long[] lSequence = generateSequence(_morseSequence);
+                Log.e(TAG,sequenceToString(lSequence));
+                for (int i = 1; i < lSequence.length; i++) {
+                    if(terminate)
+                        break;
                     if ((i % 2) == 1) {
                         Log.e(TAG,"Send");
-                        android.hardware.Camera cam = android.hardware.Camera.open();
+                        cam = android.hardware.Camera.open();
                         android.hardware.Camera.Parameters p = cam.getParameters();
                         p.setFlashMode(android.hardware.Camera.Parameters.FLASH_MODE_TORCH);
                         cam.setParameters(p);
                         cam.startPreview();
                         try {
-                            Thread.sleep(fSequence[i]);
+                            Thread.sleep(lSequence[i]-offset);
                         } catch (InterruptedException e) {
                             Log.e(TAG, "Thread sleep exception(sendLight())");
                         }
                         cam.stopPreview();
                         cam.release();
                     } else {
-                        try {
                             Log.e(TAG,"Pause");
-                            Thread.sleep((int) fSequence[i]);
-                        } catch (InterruptedException e) {
-                            Log.e(TAG, "Thread sleep exception(sendLight())");
-                        }
+
                     }
                 }
             }

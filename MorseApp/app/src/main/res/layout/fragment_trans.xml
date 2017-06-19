@@ -5,6 +5,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="16dp"
+    android:background="@android:color/white"
     tools:context="at.fhooe.mc.android.morseapp.TransFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -29,7 +30,7 @@
                 android:textColorLink="@color/colorPrimary" />
 
             <Switch
-                android:id="@+id/translator_switch_haptic"
+                android:id="@+id/translator_switch_vibration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -74,7 +75,7 @@
                 android:layout_height="80dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/colorAccent"
-                android:text="@string/translator_button_out_text" />
+                android:text="@string/translator_button_out_send_text" />
 
             <Button
                 android:id="@+id/translator_button_switch"
