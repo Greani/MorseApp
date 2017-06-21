@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MorseApp</string>
+    <string name="app_name">Morser</string>
     <string name="title_morsekey">Morse Key</string>
     <string name="title_translator">Translator</string>
     <string name="title_shortcuts">Shortcuts</string>
@@ -18,4 +18,15 @@
     <string name="translator_textfield_morse_hint_mode_1">MorseCode</string>
     <string name="translator_textfield_text_hint_mode_2">Translated Text</string>
     <string name="translator_textfield_morse_hint_mode_2">Press Buttons to insert Morsecode</string>
+
+    <string name="shortcuts_button_sos">SOS</string>
+    <string name="shortcuts_button_help">H\nE\nL\nP</string>
+    <string name="shortcuts_button_hello">HELLO</string>
+    <string name="shortcuts_button_bye">BYE</string>
+    <string name="shortcuts_button_yes">YES</string>
+    <string name="shortcuts_button_no">NO</string>
+    <string name="shortcuts_button_maybe">Maybe</string>
+
+    <string name="buttons_button_key">Morse Here</string>
+    <string name="buttons_button_reset">Reset</string>
 </resources>

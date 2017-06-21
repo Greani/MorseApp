@@ -171,7 +171,6 @@ public class TransFragment extends Fragment implements View.OnClickListener, Com
             }break;
             default:Log.e(TAG,"Unexpected Switch was pressed");
         }
-        //Log.e(TAG,"Value: "+OutputManager.getAudioStatus()+" "+OutputManager.getLightStatus()+" "+OutputManager.getVibrationStatus());
     }
 
     private void setString(String s){

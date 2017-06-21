@@ -141,6 +141,7 @@ public class OutputManager {
                         }
                     }
                 }
+                terminate=true;
             }
 
         }).start();
@@ -174,9 +175,9 @@ public class OutputManager {
                         cam.release();
                     } else {
                             Log.e(TAG,"Pause");
-
                     }
                 }
+                terminate=true;
             }
         }).start();
 

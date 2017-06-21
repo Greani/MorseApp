@@ -67,7 +67,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/colorPrimary"
-                android:text="@string/translator_button_translate_text" />
+                android:text="@string/translator_button_translate_text"
+                android:textSize="10sp" />
 
             <Button
                 android:id="@+id/translator_button_send"
