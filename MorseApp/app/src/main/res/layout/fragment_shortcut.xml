@@ -25,24 +25,29 @@
                 android:id="@+id/shortcut_switch_audio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingLeft="0dp"
+                android:paddingRight="32dp"
                 android:text="@string/translator_switch_audio_text" />
 
             <Switch
                 android:id="@+id/shortcut_switch_vibration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:paddingRight="32dp"
                 android:text="@string/translator_switch_haptic_text" />
 
             <Switch
                 android:id="@+id/shortcut_switch_light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:paddingRight="0dp"
                 android:text="@string/translator_switch_flash_text" />
         </LinearLayout>
+
+        <View
+            android:id="@+id/view4"
+            android:layout_width="1080px"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
 
         <LinearLayout
             android:layout_width="match_parent"

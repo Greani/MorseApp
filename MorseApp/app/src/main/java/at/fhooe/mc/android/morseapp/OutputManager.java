@@ -1,17 +1,20 @@
 package at.fhooe.mc.android.morseapp;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Camera;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.security.Policy;
 import java.util.ArrayList;
+
 
 import static android.content.Context.CAMERA_SERVICE;
 
@@ -24,8 +27,10 @@ public class OutputManager {
     private static boolean vibration = false;
     private static boolean audio = false;
     private static boolean light = false;
-    private static boolean terminate=true;
+    private static boolean terminate=false;
+    private static boolean lightOn=false;
     private static Vibrator v=null;
+    private static Handler mHandler=new Handler();
 
     public static boolean getVibrationStatus() {
         return (vibration);
@@ -51,30 +56,41 @@ public class OutputManager {
         light = _status;
     }
 
-    //Only works with vibration yet
-    public static void sendSignals(Context _context, String _morseSequence) {
-        v=(Vibrator) _context.getSystemService(Context.VIBRATOR_SERVICE);
-        terminate=!terminate;
-        if(terminate){
-            if(v!=null)
-            v.cancel();
-        }
-        else {
+    public static void sendSignals(final Activity _act, String _morseSequence) {
+            long[] sequence=generateSequence(_morseSequence);
             if (vibration) {
-                sendVibration(_context, _morseSequence);
+                sendVibration(_act, sequence);
             }
             if (audio) {
-
-                sendAudio(_context, _morseSequence);
+                sendAudio(_act,sequence);
             }
             if (light) {
 
-                if (_context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH))
-                    sendLight(_context, _morseSequence);
-                else
-                    Toast.makeText(_context, "This phone doesn't have a flash", Toast.LENGTH_SHORT).show();
+                if (_act.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+                    lightOn=true;
+                    sendLight(_act, sequence);
+                }
+                else{
+                    Toast.makeText(_act, "This phone doesn't have a flash", Toast.LENGTH_SHORT).show();
+                }
             }
-        }
+            if(!audio&&!light)
+            {
+                Button b=(Button)_act.findViewById(R.id.translator_button_send);
+                if(b!=null) {
+                    b.setText(R.string.translator_button_out_send_text);
+                }
+                    ShortcutFragment.setState(1);
+            }
+
+    }
+
+    public static void forceTermination(Activity _act){
+        terminate=true;
+        v=(Vibrator) _act.getSystemService(Context.VIBRATOR_SERVICE);
+            if(v!=null)
+                v.cancel();
+
     }
 
     private static long[] generateSequence(String _morseSequence) {
@@ -116,88 +132,128 @@ public class OutputManager {
         return Sequence;
     }
 
-    private static void sendVibration(Context _context, String _morseSequence) {
-        Vibrator v = (Vibrator) _context.getSystemService(Context.VIBRATOR_SERVICE);
-        long[] vSequence = generateSequence(_morseSequence);
-        v.vibrate(vSequence, -1);
+    private static void sendVibration(Activity _act, long[] _Sequence) {
+        Vibrator v = (Vibrator) _act.getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(_Sequence, -1);
     }
 
-    //when called back to back then signal adds and doesnt start new
-    private static void sendAudio(Context _context, final String _morseSequence) {
-        new Thread(new Runnable() {
-            public void run() {
-                int offset=30;
-                long[] aSequence = generateSequence(_morseSequence);
-                for (int i = 1; i < aSequence.length; i++) {
-                    if(terminate)
-                        break;
-                    if ((i % 2) == 1) {
-                        sendTone((int) aSequence[i]);
-                    } else {
-                        try {
-                            Thread.sleep((int) aSequence[i]-offset);
-                        } catch (InterruptedException e) {
-                            Log.e(TAG, "Thread sleep exception(sendAudio())");
-                        }
-                    }
-                }
-                terminate=true;
-            }
-
-        }).start();
-
+    private static void sendAudio(Activity _act ,long[] _sequence) {
+        Thread tAudio=new AudioThread(_act,_sequence);
+        tAudio.start();
     }
 
-    //Need better implementation crashes when called 2 times
-    private static void sendLight(final Context _context, final String _morseSequence) {
-        new Thread(new Runnable() {
-            android.hardware.Camera cam=null;
-            public void run() {
-                int offset=1;
-                long[] lSequence = generateSequence(_morseSequence);
-                Log.e(TAG,sequenceToString(lSequence));
-                for (int i = 1; i < lSequence.length; i++) {
-                    if(terminate)
-                        break;
-                    if ((i % 2) == 1) {
-                        Log.e(TAG,"Send");
-                        cam = android.hardware.Camera.open();
-                        android.hardware.Camera.Parameters p = cam.getParameters();
-                        p.setFlashMode(android.hardware.Camera.Parameters.FLASH_MODE_TORCH);
-                        cam.setParameters(p);
-                        cam.startPreview();
-                        try {
-                            Thread.sleep(lSequence[i]-offset);
-                        } catch (InterruptedException e) {
-                            Log.e(TAG, "Thread sleep exception(sendLight())");
-                        }
-                        cam.stopPreview();
-                        cam.release();
-                    } else {
-                            Log.e(TAG,"Pause");
-                    }
-                }
-                terminate=true;
-            }
-        }).start();
-
-
-
+    private static void sendLight(Activity _act, long[] _sequence) {
+        Thread lThread = new LightThread(_act,_sequence);
+        lThread.start();
     }
-    //Sends one tone
-    private static void sendTone(int _duration){
-        int amStreamType = AudioManager.STREAM_MUSIC;
-        int volume = 75;
-        ToneGenerator toneGenerator = new ToneGenerator(amStreamType, volume);
-        int toneType = ToneGenerator.TONE_DTMF_0;
-        toneGenerator.startTone(toneType,_duration);
-        try {
-            Thread.sleep(_duration);
-        } catch (InterruptedException e) {
-            Log.e(TAG,"Thread sleep exception(sendSound())");
+
+
+    static class AudioThread extends Thread{
+        private long[] aSequence;
+        private Activity mainActivity;
+        public AudioThread(Activity _act,long[] _sequence){
+            aSequence=_sequence;
+            mainActivity=_act;
         }
-        toneGenerator.release();
+        @Override
+        public void run() {
+            super.run();
+            int offset=30;
+            for (int i = 1; i < aSequence.length; i++) {
+                if(terminate)
+                    break;
+                if ((i % 2) == 1) {
+                    sendTone((int) aSequence[i]);
+                } else {
+                    try {
+                        Thread.sleep((int) aSequence[i]-offset);
+                    } catch (InterruptedException e) {
+                        Log.e(TAG, "Thread sleep exception(sendAudio())");
+                    }
+                }
+            }
 
+            if(!lightOn) {
+                terminate=false;
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Button b = (Button) mainActivity.findViewById(R.id.translator_button_send);
+                        if(b!=null){
+                            b.setText(R.string.translator_button_out_send_text);
+                        }
+                        ShortcutFragment.setState(1);
+                    }
+                });
+
+            }
+        }
+        private static void sendTone(int _duration){
+            int amStreamType = AudioManager.STREAM_MUSIC;
+            int volume = 75;
+            ToneGenerator toneGenerator = new ToneGenerator(amStreamType, volume);
+            int toneType = ToneGenerator.TONE_DTMF_0;
+            toneGenerator.startTone(toneType,_duration);
+            try {
+                Thread.sleep(_duration);
+            } catch (InterruptedException e) {
+                Log.e(TAG,"Thread sleep exception(sendSound())");
+            }
+            toneGenerator.release();
+
+        }
+    }
+    static class LightThread extends Thread{
+        private long[] lSequence;
+        private Activity mainActivity;
+        android.hardware.Camera cam=null;
+        public LightThread(Activity _act,long[] _sequence){
+            lSequence=_sequence;
+            mainActivity=_act;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+            int offset=1;
+            Log.e(TAG,sequenceToString(lSequence));
+            for (int i = 1; i < lSequence.length; i++) {
+                if(terminate)
+                    break;
+                if ((i % 2) == 1) {
+                    Log.e(TAG,"Send");
+                    cam = android.hardware.Camera.open();
+                    android.hardware.Camera.Parameters p = cam.getParameters();
+                    p.setFlashMode(android.hardware.Camera.Parameters.FLASH_MODE_TORCH);
+                    cam.setParameters(p);
+                    cam.startPreview();
+                    try {
+                        Thread.sleep(lSequence[i]-offset);
+                    } catch (InterruptedException e) {
+                        Log.e(TAG, "Thread sleep exception(sendLight())");
+                    }
+                    cam.stopPreview();
+                    cam.release();
+                } else {
+                    Log.e(TAG,"Pause");
+                }
+            }
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Button b = (Button) mainActivity.findViewById(R.id.translator_button_send);
+                        if(b!=null){
+                            b.setText(R.string.translator_button_out_send_text);
+                        }
+                        ShortcutFragment.setState(1);
+
+                    }
+                });
+            terminate=false;
+            lightOn=false;
+
+        }
     }
 
 

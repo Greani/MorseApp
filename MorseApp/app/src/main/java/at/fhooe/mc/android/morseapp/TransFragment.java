@@ -23,6 +23,7 @@ import org.w3c.dom.Text;
 public class TransFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     public static final String TAG = "Translator Fragment";
+    public boolean waitClick=false;
 
     public TransFragment() {
         // Required empty public constructor
@@ -66,6 +67,13 @@ public class TransFragment extends Fragment implements View.OnClickListener, Com
         sw.setChecked(OutputManager.getLightStatus());
         sw=(Switch)view.findViewById(R.id.translator_switch_vibration);
         sw.setChecked(OutputManager.getVibrationStatus());
+
+        if(TranslatorBackend.getMode()!=true)
+        {
+            Button b=(Button)getActivity().findViewById(R.id.translator_button_switch);
+            TranslatorBackend.invertMode();
+            b.performClick();
+        }
     }
 
 
@@ -122,7 +130,6 @@ public class TransFragment extends Fragment implements View.OnClickListener, Com
                 }
                 else
                 {
-                    Log.e(TAG,"asdf");
                     b1.setVisibility(View.GONE);
                     b2.setVisibility(View.INVISIBLE);
                     b3.setVisibility(View.INVISIBLE);
@@ -135,19 +142,25 @@ public class TransFragment extends Fragment implements View.OnClickListener, Com
                     TextTextBox.setHint(R.string.translator_textfield_text_hint_mode_1);
                     MorseTextBox.setText(R.string.translator_textfield_morse_hint_mode_1);
                 }
-                TranslatorBackend.setMode();
+                TranslatorBackend.invertMode();
             }break;
             case R.id.translator_button_send:{
                 extractInsertTranslate();
                 Button b=(Button)getActivity().findViewById(R.id.translator_button_send);
                 if(b.getText()==getResources().getString(R.string.translator_button_out_send_text)) {
                     b.setText(R.string.translator_button_out_pause_text);
+                    TextView MorseTextBox = (TextView) getActivity().findViewById(R.id.translator_textfield_morse);
+                    OutputManager.sendSignals(getActivity(),MorseTextBox.getText().toString());
+                    waitClick=false;
                 }
                 else {
-                    b.setText(R.string.translator_button_out_send_text);
+                    if(!waitClick){
+                        OutputManager.forceTermination(getActivity());
+                        waitClick=true;
+                    }
+
                 }
-                TextView MorseTextBox = (TextView) getActivity().findViewById(R.id.translator_textfield_morse);
-                    OutputManager.sendSignals(getActivity(),MorseTextBox.getText().toString());
+
 
             }break;
             default:{

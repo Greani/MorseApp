@@ -19,7 +19,7 @@ import android.widget.TextView;
 public class ShortcutFragment extends android.app.Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     public static final String TAG="Shortcut Fragment";
-
+    private static int state=1;
     public ShortcutFragment() {
         // Required empty public constructor
     }
@@ -73,8 +73,16 @@ public class ShortcutFragment extends android.app.Fragment implements View.OnCli
 
     @Override
     public void onClick(View _v) {
-        Button b=(Button)getActivity().findViewById(_v.getId());
-        OutputManager.sendSignals(getActivity(),TranslatorBackend.translate(b.getText().toString()));
+        if(state==1) {
+            state=2;
+            Button b = (Button) getActivity().findViewById(_v.getId());
+            OutputManager.sendSignals(getActivity(), TranslatorBackend.translate(b.getText().toString()));
+
+        } else if (state == 2) {
+            state=3;
+            OutputManager.forceTermination(getActivity());
+
+        }
 
     }
 
@@ -93,5 +101,8 @@ public class ShortcutFragment extends android.app.Fragment implements View.OnCli
             default:
                 Log.e(TAG,"Unexpected Switch was pressed");
         }
+    }
+    public static void setState(int _state){
+        state=_state;
     }
 }

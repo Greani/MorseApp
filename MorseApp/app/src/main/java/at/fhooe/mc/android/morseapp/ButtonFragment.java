@@ -38,6 +38,10 @@ public class ButtonFragment extends android.app.Fragment implements View.OnTouch
         mGestureDetector=new GestureDetector(getActivity(),this);
         b=(Button)v.findViewById(R.id.buttons_button_reset);
         b.setOnClickListener(this);
+        b=(Button)v.findViewById(R.id.buttons_button_pause);
+        b.setOnClickListener(this);
+        b=(Button)v.findViewById(R.id.buttons_button_clear);
+        b.setOnClickListener(this);
         return v;
     }
 
@@ -108,12 +112,44 @@ public class ButtonFragment extends android.app.Fragment implements View.OnTouch
     }
 
     @Override
-    public void onClick(View v) {
-        lastTouchTime=0;
-        EditText morseCode=(EditText)getActivity().findViewById(R.id.buttons_text_morsecode);
-        morseCode.setText("");
-        EditText text=(EditText)getActivity().findViewById(R.id.buttons_text_text);
-        text.setText("");
+    public void onClick(View _v) {
+        switch(_v.getId()){
+            case R.id.buttons_button_clear:{
+                lastTouchTime=0;
+                EditText morseCode=(EditText)getActivity().findViewById(R.id.buttons_text_morsecode);
+                String s1=morseCode.getText().toString();
+                StringBuilder bob = new StringBuilder();
+                if(s1.length()>0) {
+                    bob.append(s1.substring(0, s1.length() - 1));
+                    morseCode.setText(bob.toString());
+                    EditText text=(EditText)getActivity().findViewById(R.id.buttons_text_text);
+                    text.setText(TranslatorBackend.translateBack(bob.toString()));
+                }
+                else{
+                    morseCode.setText("");
+                    EditText text=(EditText)getActivity().findViewById(R.id.buttons_text_text);
+                    text.setText("");
+                }
+
+
+
+
+            }break;
+            case R.id.buttons_button_pause:{
+                lastTouchTime=0;
+            }break;
+            case R.id.buttons_button_reset:{
+                lastTouchTime=0;
+                EditText morseCode=(EditText)getActivity().findViewById(R.id.buttons_text_morsecode);
+                morseCode.setText("");
+                EditText text=(EditText)getActivity().findViewById(R.id.buttons_text_text);
+                text.setText("");
+            }break;
+            default: {
+            Log.e(TAG,"unexpected button encountered");
+            }
+        }
+
 
     }
 }

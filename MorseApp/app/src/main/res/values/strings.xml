@@ -29,4 +29,6 @@
 
     <string name="buttons_button_key">Morse Here</string>
     <string name="buttons_button_reset">Reset</string>
+    <string name="buttons_button_pause">Pause</string>
+    <string name="buttons_button_clear">Clear</string>
 </resources>

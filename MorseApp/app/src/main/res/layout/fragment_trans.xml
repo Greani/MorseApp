@@ -2,10 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="16dp"
     android:background="@android:color/white"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="8dp"
     tools:context="at.fhooe.mc.android.morseapp.TransFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -16,16 +16,19 @@
         android:orientation="vertical"
         android:weightSum="1">
 
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:orientation="horizontal">
 
             <Switch
                 android:id="@+id/translator_switch_audio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginRight="32dp"
                 android:text="@string/translator_switch_audio_text"
                 android:textColorLink="@color/colorPrimary" />
 
@@ -33,7 +36,7 @@
                 android:id="@+id/translator_switch_vibration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginRight="32dp"
                 android:text="@string/translator_switch_haptic_text"
                 android:textColorLink="@color/colorPrimary" />
 
@@ -41,24 +44,38 @@
                 android:id="@+id/translator_switch_light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/translator_switch_flash_text"
                 android:textColorLink="@color/colorPrimary" />
         </LinearLayout>
+
+        <View
+            android:layout_width="1080px"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
 
         <EditText
             android:id="@+id/translator_textfield_text"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_weight="0.08"
             android:ems="10"
             android:hint="@string/translator_textfield_text_hint_mode_1"
             android:inputType="textMultiLine|textPersonName"
             android:textSize="30sp" />
 
+        <View
+            android:id="@+id/view"
+            android:layout_width="1080px"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:orientation="horizontal">
 
             <Button
@@ -87,16 +104,32 @@
                 android:text="@string/translator_button_switch_text" />
         </LinearLayout>
 
+        <View
+            android:id="@+id/view2"
+            android:layout_width="1080px"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
         <TextView
             android:id="@+id/translator_textfield_morse"
             android:layout_width="match_parent"
             android:layout_height="160dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:text="@string/translator_textfield_morse_hint_mode_1"
             android:textSize="30sp" />
+
+        <View
+            android:id="@+id/view3"
+            android:layout_width="1080px"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:orientation="horizontal">
 
             <Button

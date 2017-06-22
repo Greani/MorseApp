@@ -142,7 +142,7 @@ public class TranslatorBackend {
 
     }
     public static boolean getMode(){return mode;}
-    public static void setMode(){mode=!mode;}
+    public static void invertMode(){mode=!mode;}
 
 }
 
