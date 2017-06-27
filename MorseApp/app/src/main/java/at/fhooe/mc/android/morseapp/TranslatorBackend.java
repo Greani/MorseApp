@@ -6,14 +6,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Dominik on 06.06.2017.
+ * public class TranslatorBackend
+ *
+ * is the class that handles the translation eiter ways
+ * it works with hashmaps so every char has a responding morse code an vice versa
+ * differentiates between the to modes (1)text to morse and (2)morse to text
+ *
+ *
+ * Only static methods and variables cause it shpuld work like a "background task".
+ * Operates in the background of both fragments which need the Translation.
+ * Done to only fill the hashmaps one time
  */
 
 public class TranslatorBackend {
-
+    //Hashmap for text to morse
     private static Map<String, String> alphtomorse =new HashMap<String, String>();
+    //Hashmap for morse to text
     private static Map<String, String> morsetoalph =new HashMap<String, String>();
+    //variable for the different modes
     private static boolean mode=true;
+
+    /**
+     * public static void fillMap()
+     *
+     * Fills the text to morse map according to the morse alphabet and normal alphabet
+     */
     public static void fillMap(){
 
         alphtomorse.put("A","· −");
@@ -65,6 +82,11 @@ public class TranslatorBackend {
         alphtomorse.put("\n","\n");
 
     }
+    /**
+     * public static void fillBackMap()
+     *
+     * Fills the morse to text map according to the morse alphabet and normal alphabet
+     */
     public static void fillBackMap(){
         morsetoalph.put("· −","A");
         morsetoalph.put("− · · ·","B");
@@ -114,34 +136,77 @@ public class TranslatorBackend {
         morsetoalph.put("\n","\n");
         morsetoalph.put("\n","\n");
     }
-    public static String translate(String orgText){
+
+    /**
+     *
+     * @param _orgText String of the text that has to be translated
+     * @return  returns a morse code String
+     *
+     * method takes every char of the takes and adds the corresponding morse code of the map to the StringBuiilder
+     * if the char is not defined in the morse alphabet then it adds a #
+     * adds a pause between every char
+     */
+    public static String translate(String _orgText){
         StringBuilder traText=new StringBuilder();
-        for(int i=0;i<orgText.length();i++)
+        //go through every char
+        for(int i=0;i<_orgText.length();i++)
         {
-            orgText=orgText.toUpperCase();
-            if(alphtomorse.get(Character.toString(orgText.charAt(i)))!=null)
-            traText.append(alphtomorse.get(Character.toString(orgText.charAt(i))));
-            else
-                traText.append("N/A");
-            if(orgText.charAt(i)!='\n')
+            //make the text uppercase to translate both cases
+            _orgText=_orgText.toUpperCase();
+            //if available in the morse alphabet
+            if(alphtomorse.get(Character.toString(_orgText.charAt(i)))!=null) {
+                traText.append(alphtomorse.get(Character.toString(_orgText.charAt(i))));
+            }
+            else {
+                traText.append("#");
+            }
+            //appends pause between every char
+            if(_orgText.charAt(i)!='\n')
             traText.append("   ");
         }
         return(traText.toString());
 
     }
-    public static String translateBack(String morseCode){
+
+    /**
+     * public static String translateBack(String _morseCode)
+     * @param _morseCode    morse code that should be translated
+     * @return      returns normal translated text
+     *
+     * method that splits the morse code into char sequences cause between every char there are three spaces
+     * these sequences get translated per hashmap and appended to the StringBuilder
+     * if the sequence isn't available # is appended to the StringBuilder
+     */
+    public static String translateBack(String _morseCode){
         StringBuilder traText=new StringBuilder();
-        String[] sarr=morseCode.split("  ");
+        //Split between pauses
+        String[] sarr=_morseCode.split("  ");
+        //Go through every char d´sequence
         for(int i=0;i<sarr.length;i++) {
-            if (morsetoalph.get(sarr[i]) != null)
+            //if sequence is a char append the char
+            if (morsetoalph.get(sarr[i]) != null) {
                 traText.append(morsetoalph.get(sarr[i]));
-            else
+            }
+            else {
                 traText.append("#");
+            }
         }
         return(traText.toString());
 
     }
+
+    /**
+     * public static boolean getMode()
+     * @return returns the current translationmode
+     */
     public static boolean getMode(){return mode;}
+
+    /**
+     * public static void invertMode(
+     *
+     * Inverts the current translation mode
+     * is called by the switch button
+     */
     public static void invertMode(){mode=!mode;}
 
 }
