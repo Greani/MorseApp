@@ -283,11 +283,16 @@ public class TransFragment extends Fragment implements View.OnClickListener, Com
         StringBuilder sb = new StringBuilder();
         //if not showing the hint
         if(!s1.equalsIgnoreCase(getResources().getString(R.string.translator_textfield_morse_hint_mode_2))) {
-            if(s1.length()>0)
-                sb.append(s1.substring(0,s1.length()-1));
+            if(s1.length()>1) {
+                sb.append(s1.substring(0, s1.length() - 1));
+                //set the new morse text
+                MorseTextBox.setText(sb.toString());
+            }
+            else {
+                MorseTextBox.setText(getResources().getString(R.string.translator_textfield_morse_hint_mode_2));
+            }
         }
-        //set the new morse text
-        MorseTextBox.setText(sb.toString());
+
     }
 
     /**

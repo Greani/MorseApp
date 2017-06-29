@@ -18,15 +18,15 @@ import android.widget.Toast;
 import java.util.Timer;
 
 /**
- *  public class ButtonFragment extends android.app.Fragment implements View.OnTouchListener,GestureDetector.OnGestureListener, View.OnClickListener
- *  The ButtonFragment is a Fragment which is responsible for the MorseKey Screen.
- *  It interacts with the GUI and runs on the Main GUI Thread as it implements an OnTouchListener, OnClickListener and GestureDetector.
+ *  public class ButtonFragment extends android.app.Fragment implements View.OnTouchListener,GestureDetector.OnGestureListener, View.OnClickListener \n
+ *  The ButtonFragment is a Fragment which is responsible for the MorseKey Screen.\n
+ *  It interacts with the GUI and runs on the Main GUI Thread as it implements an OnTouchListener, OnClickListener and GestureDetector.\n
  *
- *  The Fragment has two states:(1)shown in the Container of the TransActivity, and (2) not shown in the container.
+ *  The Fragment has two states:(1)shown in the Container of the TransActivity, and (2) not shown in the container.\n
  *
- *  The Fragment creates a View designed in the R.layout_fragment_button.xml
- *  In this View you can interact with three Buttons per Onclick and one per OnTouch/GestureDetector.
- *  It's Gesture Detector decides between Short Touch and Long Touch to determine a short or long morse char.
+ *  The Fragment creates a View designed in the R.layout_fragment_button.xml.\n
+ *  In this View you can interact with three Buttons per Onclick and one per OnTouch/GestureDetector.\n
+ *  It's Gesture Detector decides between Short Touch and Long Touch to determine a short or long morse char.\n
  */
 public class ButtonFragment extends android.app.Fragment implements View.OnTouchListener,GestureDetector.OnGestureListener, View.OnClickListener {
 
@@ -70,6 +70,13 @@ public class ButtonFragment extends android.app.Fragment implements View.OnTouch
         b=(Button)v.findViewById(R.id.buttons_button_clear);
         b.setOnClickListener(this);
 
+        //Deactivating Textfield
+        EditText e=null;
+        e=(EditText)v.findViewById(R.id.buttons_text_text);
+        e.setKeyListener(null);
+        e=(EditText)v.findViewById(R.id.buttons_text_morsecode);
+        e.setKeyListener(null);
+
         return v;
     }
     /*
@@ -109,7 +116,7 @@ public class ButtonFragment extends android.app.Fragment implements View.OnTouch
      */
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
-        addChar('·');
+        addChar("·");
         return true;
     }
 
@@ -126,7 +133,7 @@ public class ButtonFragment extends android.app.Fragment implements View.OnTouch
      */
     @Override
     public void onLongPress(MotionEvent e) {
-        addChar('−');
+        addChar("−");
     }
 
     @Override
@@ -142,9 +149,9 @@ public class ButtonFragment extends android.app.Fragment implements View.OnTouch
      * Else/Then it creates a StringBuilder, adds the already existing text and the nadds the char and displays the new Text.
      * The morse text is then translated into normal text and displayed in the R.id.buttons_text_text
      */
-    private void addChar(char _ch){
+    private void addChar(String _ch){
         //If new morse char the time between the chars has to be converted into ' 's
-        if(_ch!=' ') {
+        if(_ch!=" ") {
             lookAtTimer();
         }
 
@@ -176,7 +183,7 @@ public class ButtonFragment extends android.app.Fragment implements View.OnTouch
             float span=SystemClock.elapsedRealtime()-lastTouchTime;
             //Adding ' ' per maxTimeBetween Milliseconds
             for(int i=maxTimeBetween;span-i>0;){
-                addChar(' ');
+                addChar(" ");
                 i=i+maxTimeBetween;
             }
         }

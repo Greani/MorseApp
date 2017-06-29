@@ -184,22 +184,24 @@ public class OutputManager {
         sequenceList.add((long) 200);
 
         for (int i = 0; i < _morseSequence.length(); i++) {
-            switch (_morseSequence.charAt(i)) {
-                case '·': {
+            String charString=Character.toString(_morseSequence.charAt(i));
+
+            switch (charString) {
+                case "·": {
                     sequenceList.add((long) 100);
                     //if the next char is also a signal then the pause between is 0ms
                     if ((i + 1 >= _morseSequence.length()) || _morseSequence.charAt(i + 1) != ' ')
                         sequenceList.add((long) 0);
                 }
                 break;
-                case '−': {
+                case "−": {
                     sequenceList.add((long) 1000);
                     //if the next char is also a signal then the pause between is 0ms
                     if ((i + 1 >= _morseSequence.length()) || _morseSequence.charAt(i + 1) != ' ')
                         sequenceList.add((long) 0);
                 }
                 break;
-                case ' ': {
+                case " ": {
                     //add the pause and if there is more then one ' ' then add them together
                     long pauseLength = 0;
                     int j;
